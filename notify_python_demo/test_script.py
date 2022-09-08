@@ -1,26 +1,44 @@
 import os 
+import argparse
 from dotenv import load_dotenv
 from notifications_python_client.notifications import NotificationsAPIClient
 
 
-load_dotenv()
-api_key = os.environ.get('USER_API_KEY')
-admin_api_key = os.environ.get('ADMIN_API_KEY')
-service_id = os.environ.get('ISS_UID')
-service_key_name = os.environ.get('SERVICE_NAME')
+def parse_args() -> argparse.Namespace:
+    """
+    Parse command line arguments using the argparse library
+    return argparse object
+    """
+    parser = argparse.ArgumentParser(description='Options for testing python notify client')
+    parser.add_argument('--sms', type=bool, help='send sms')
+    parser.add_argument('--email', type=bool, help='send email')
 
-concat_api_key = "_".join([service_key_name, service_id, api_key])
-# must pass in base_url, as the default is notify.uk's production URL
-notifications_client = NotificationsAPIClient(concat_api_key, base_url="http://localhost:6011")
+    args = parser.parse_args()
+    return args
 
-response = notifications_client.send_sms_notification(
-    phone_number="18016525984",
-    template_id="8ccb6087-abf9-469e-bce5-9a3b361dd4c2",
-    personalisation={
-        "day_of_week": "Wednesday",
-        "colour": "Purple"
-    }
-)
 
-print(response)
+def main():
+    load_dotenv()
+    api_key = os.environ.get('USER_API_KEY')
+    admin_api_key = os.environ.get('ADMIN_API_KEY')
+    service_id = os.environ.get('ISS_UID')
+    service_key_name = os.environ.get('SERVICE_NAME')
+    concat_api_key = "_".join([service_key_name, service_id, api_key])
+    
+    args = parse_args()
+    # must pass in base_url, as the default is notify.uk's production URL
+    notifications_client = NotificationsAPIClient(concat_api_key, base_url="http://localhost:6011")
 
+    response = notifications_client.send_sms_notification(
+        phone_number="18016525984",
+        template_id="8ccb6087-abf9-469e-bce5-9a3b361dd4c2",
+        personalisation={
+            "day_of_week": "Wednesday",
+            "colour": "Purple"
+        }
+    )
+
+    print(response)
+
+if __name__ == '__main__':
+    main()
