@@ -10,8 +10,10 @@ def parse_args() -> argparse.Namespace:
     return argparse object
     """
     parser = argparse.ArgumentParser(description='Options for testing python notify client')
-    parser.add_argument('--sms', type=bool, help='send sms')
-    parser.add_argument('--email', type=bool, help='send email')
+    parser.add_argument('--send-sms', type=bool, help='send sms')
+    parser.add_argument('--send-email', type=bool, help='send email')
+    parser.add_argument('--number', type=str, help='phone number to send notification')
+    parser.add_argument('--email', type=str, help='email address to send notification')
 
     args = parser.parse_args()
     return args
