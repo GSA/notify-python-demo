@@ -16,6 +16,10 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument('--send_email', type=bool, help='send email')
     parser.add_argument('--number', type=str, help='phone number to send notification')
     parser.add_argument('--email', type=str, help='email address to send notification')
+    parser.add_argument('--csv', type=bool, help='send bulk message')
+    parser.add_argument('--path', type=str, help='path to directory where csv file resides', default="csv_data")
+    parser.add_argument('--filename', type=str, help='csv file name')
+
     args = parser.parse_args()
 
     return args
@@ -69,8 +73,11 @@ def main():
     if len(sys.argv) == 0:
         print("Please pass in some arguments to run the script.")
 
-    # todo: csv check/load here before others
-    if args.send_sms:
+    if args.csv:
+        with open(os.path.join(args.path, args.filename), mode='r', encoding='utf-8-sig') as csvfile:
+        reader = csv.DictReader(csvfile)
+        pass
+    elif args.send_sms:
         check_and_send_sms(notifications_client, args)
     elif args.send_email:
         check_and_send_email(notifications_client, args)
