@@ -20,11 +20,13 @@ def parse_args() -> argparse.Namespace:
 
     return args
 
+
 def check_and_send_sms(notifications_client, args):
     if not args.number:
         logging.error("Cannot send sms without phone number")
-    if args.number:
-        # validate phone number?
+    else:
+        # todo: validate phone number?
+        # todo: make template_id a param?
         response = notifications_client.send_sms_notification(
             phone_number=args.number,
             template_id="8ccb6087-abf9-469e-bce5-9a3b361dd4c2",
@@ -32,6 +34,21 @@ def check_and_send_sms(notifications_client, args):
                 "day_of_week": "Wednesday",
                 "colour": "Purple"
             }
+        )
+        print(response)
+
+
+def check_and_send_email(notifications_client, args):
+    if not args.email:
+        logging.error("Cannot send email without email address")
+    else:
+        # todo: validate phone number
+        # todo: make template_id a param?
+        # todo: add personalisations according to template_id?
+        response = notifications_client.send_email_notification(
+            email_address=args.email,
+            template_id="figure_this_out",
+            # personalisation={}
         )
         print(response)
 
@@ -55,6 +72,8 @@ def main():
     # todo: csv check/load here before others
     if args.send_sms:
         check_and_send_sms(notifications_client, args)
+    elif args.send_email:
+        check_and_send_email(notifications_client, args)
 
 if __name__ == '__main__':
     main()
