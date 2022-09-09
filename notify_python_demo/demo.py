@@ -23,10 +23,21 @@ concat_api_key = "_".join([service_name, iss_uid, user_api_key])
 # must pass in base_url, as the default is notify.uk's production URL
 notifications_client = NotificationsAPIClient(concat_api_key, base_url=base_url)
 
-response = notifications_client.send_sms_notification(
-    phone_number=phone_number,
-    template_id=template_id,
-    personalisation={"day_of_week": "Wednesday", "colour": "Purple"},
+#response = notifications_client.send_sms_notification(
+#    phone_number=phone_number,
+#    template_id=template_id,
+#    personalisation={"day_of_week": "Wednesday", "colour": "Purple"},
+#)
+
+#response = notifications_client.get_template(template_id)
+
+response = notifications_client.get_all_templates(
+    template_type="sms" # optional string
 )
 
-pprint(response)
+# get all SMS templates
+# ask user which one to use, by body
+# prompt for a y/n on whether you want an SMS to be sent to phone_number
+
+templates = [x['body'] for x in response['templates']]
+[print(f"{x}. {template}") for x, template in enumerate(templates, start=1)]
