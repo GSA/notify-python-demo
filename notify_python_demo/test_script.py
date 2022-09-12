@@ -75,8 +75,8 @@ def main():
 
     if args.csv:
         with open(os.path.join(args.path, args.filename), mode='r', encoding='utf-8-sig') as csvfile:
-        reader = csv.DictReader(csvfile)
-        pass
+            reader = csv.DictReader(csvfile)
+            pass
     elif args.send_sms:
         check_and_send_sms(notifications_client, args)
     elif args.send_email:
