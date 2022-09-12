@@ -32,39 +32,34 @@ def check_and_process_csv_file(notifications_client, args):
     else:
         with open(os.path.join(args.path, args.filename), mode='r', encoding='utf-8-sig') as csvfile:
             reader = csv.DictReader(csvfile)
+            column_names = reader.fieldnames
+            print("Passed in columns: {}".format(column_names))
             pass
 
 
-def check_and_send_sms(notifications_client, args):
-    if not args.number:
-        logging.error("Cannot send sms without phone number")
-    else:
-        # todo: validate phone number?
-        # todo: make template_id a param?
-        response = notifications_client.send_sms_notification(
-            phone_number=args.number,
-            template_id="8ccb6087-abf9-469e-bce5-9a3b361dd4c2",
-            personalisation={
-                "day_of_week": "Wednesday",
-                "colour": "Purple"
-            }
-        )
-        print(response)
+def send_sms(notifications_client, number):
+    # todo: validate phone number?
+    # todo: make template_id a param?
+    response = notifications_client.send_sms_notification(
+        phone_number=number,
+        template_id="8ccb6087-abf9-469e-bce5-9a3b361dd4c2",
+        personalisation={
+            "day_of_week": "Wednesday",
+            "colour": "Purple"
+        }
+    )
+    print(response)
 
 
-def check_and_send_email(notifications_client, args):
-    if not args.email:
-        logging.error("Cannot send email without email address")
-    else:
-        # todo: validate phone number
-        # todo: make template_id a param?
-        # todo: add personalisations according to template_id?
-        response = notifications_client.send_email_notification(
-            email_address=args.email,
-            template_id="figure_this_out",
-            # personalisation={}
-        )
-        print(response)
+def send_email(notifications_client, email):
+    # todo: make template_id a param?
+    # todo: add personalisations according to template_id?
+    response = notifications_client.send_email_notification(
+        email_address=email,
+        template_id="figure_this_out",
+        # personalisation={}
+    )
+    print(response)
 
 
 def main():
@@ -86,10 +81,15 @@ def main():
     if args.csv:
         check_and_process_csv_file(notifications_client, args)
     elif args.send_sms:
-        check_and_send_sms(notifications_client, args)
+        if not args.number:
+            logging.error("Cannot send sms without phone number")
+        else:
+            send_sms(notifications_client, args.number)
     elif args.send_email:
-        check_and_send_email(notifications_client, args)
-
+        if not args.email:
+            logging.error("Cannot send email without email address")
+        else:
+            send_email(notifications_client, args.email)
 
 
 if __name__ == '__main__':
