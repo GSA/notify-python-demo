@@ -1,12 +1,13 @@
 import os
 import sys
+import csv
 import argparse
 import logging
 from dotenv import load_dotenv
 from notifications_python_client.notifications import NotificationsAPIClient
 
 
-def parse_args() -> argparse.Namespace:
+def parse_args():
     """
     Parse command line arguments using the argparse library
     return argparse object
@@ -23,6 +24,15 @@ def parse_args() -> argparse.Namespace:
     args = parser.parse_args()
 
     return args
+
+
+def check_and_process_csv_file(notifications_client, args):
+    if not args.path or not args.filename:
+        logging.error("You need to pass in both the path and filename to process a csv file")
+    else:
+        with open(os.path.join(args.path, args.filename), mode='r', encoding='utf-8-sig') as csvfile:
+            reader = csv.DictReader(csvfile)
+            pass
 
 
 def check_and_send_sms(notifications_client, args):
@@ -74,13 +84,13 @@ def main():
         print("Please pass in some arguments to run the script.")
 
     if args.csv:
-        with open(os.path.join(args.path, args.filename), mode='r', encoding='utf-8-sig') as csvfile:
-            reader = csv.DictReader(csvfile)
-            pass
+        check_and_process_csv_file(notifications_client, args)
     elif args.send_sms:
         check_and_send_sms(notifications_client, args)
     elif args.send_email:
         check_and_send_email(notifications_client, args)
+
+
 
 if __name__ == '__main__':
     main()
