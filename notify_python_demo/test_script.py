@@ -7,6 +7,9 @@ from dotenv import load_dotenv
 from notifications_python_client.notifications import NotificationsAPIClient
 
 
+# todo: figure out how to do personalisation object in csv??
+ACCEPTABLE_COLUMNS = ["number", "email", "template_id", "day_of_week", "colour"]
+
 def parse_args():
     """
     Parse command line arguments using the argparse library
@@ -34,6 +37,9 @@ def check_and_process_csv_file(notifications_client, args):
             reader = csv.DictReader(csvfile)
             column_names = reader.fieldnames
             print("Passed in columns: {}".format(column_names))
+            for col in column_names:
+                if col not in ACCEPTABLE_COLUMNS:
+                    logging.error("Cannot have {} column name".format(col))
             pass
 
 
