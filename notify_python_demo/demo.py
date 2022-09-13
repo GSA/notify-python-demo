@@ -31,13 +31,21 @@ notifications_client = NotificationsAPIClient(concat_api_key, base_url=base_url)
 
 #response = notifications_client.get_template(template_id)
 
-response = notifications_client.get_all_templates(
-    template_type="sms" # optional string
-)
+#response = notifications_client.get_all_templates(
+#    template_type="sms" # optional string
+#)
 
 # get all SMS templates
 # ask user which one to use, by body
 # prompt for a y/n on whether you want an SMS to be sent to phone_number
 
-templates = [x['body'] for x in response['templates']]
-[print(f"{x}. {template}") for x, template in enumerate(templates, start=1)]
+#templates = [x['body'] for x in response['templates']]
+#[print(f"{x}. {template}") for x, template in enumerate(templates, start=1)]
+#print(response['templates'])
+
+response = notifications_client.get_all_notifications(template_type="sms")
+print("SMS Log")
+print("Phone#     ", "Status  ", "Completed")
+print("-----------", "--------", "---------")
+for r in response['notifications']:
+    print(r['phone_number'], f"{r['status']}    ", r['completed_at'])
