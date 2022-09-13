@@ -29,3 +29,10 @@ print("Phone#     ", "Status  ", "Completed")
 print("-----------", "--------", "---------")
 for r in response['notifications']:
     print(r['phone_number'], f"{r['status']}    ", r['completed_at'])
+
+response = notifications_client.get_all_notifications(template_type="email")
+print("\n\nEMail Log")
+print("Email            ", "Status  ", "Completed")
+print("-----------------", "--------", "---------")
+for r in response['notifications']:
+    print(r['email_address'], f"{r['status']}    ", r['completed_at'])

@@ -16,8 +16,8 @@ user_api_key = os.environ.get("USER_API_KEY")
 admin_api_key = os.environ.get("ADMIN_API_KEY")
 iss_uid = os.environ.get("ISS_UUID")
 service_name = os.environ.get("SERVICE_NAME")
-template_id = os.environ.get("TEMPLATE_ID")
 phone_number = os.environ.get("PHONE_NUMBER")
+send_email_address = os.environ.get("SEND_EMAIL_ADDRESS")
 
 concat_api_key = "_".join([service_name, iss_uid, user_api_key])
 
@@ -74,11 +74,12 @@ def prompt_to_send_it(client, template_type, template_id, personalisation):
             print(response['content']['body'])
         else:
             print("XXX: EMAIL support not done")
-            #response = client.send_email_notification(
-            #    email_address=email_address, # currently hard-coded from .env
-            #    template_id=template_id,
-            #    personalisation=personalisation,
-            #)
+            response = client.send_email_notification(
+                email_address=send_email_address, # currently hard-coded from .env
+                template_id=template_id,
+                personalisation=personalisation,
+            )
+            print(response)
     else:
         print(f"{template_type} send cancelled")
  
