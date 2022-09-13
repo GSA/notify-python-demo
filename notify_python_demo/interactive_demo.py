@@ -73,13 +73,12 @@ def prompt_to_send_it(client, template_type, template_id, personalisation):
             print(f"SMS sent to {phone_number}:")
             print(response['content']['body'])
         else:
-            print("XXX: EMAIL support not done")
             response = client.send_email_notification(
                 email_address=send_email_address, # currently hard-coded from .env
                 template_id=template_id,
                 personalisation=personalisation,
             )
-            print(response)
+            print(f"Email sent!")
     else:
         print(f"{template_type} send cancelled")
  
