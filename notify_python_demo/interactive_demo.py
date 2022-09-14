@@ -1,8 +1,5 @@
-import sys
 import os
 import re
-
-from pprint import pprint
 
 from dotenv import load_dotenv
 from notifications_python_client.notifications import NotificationsAPIClient
@@ -86,7 +83,7 @@ def prompt_to_send_it(client, template_type, template_id, personalisation):
                 template_id=template_id,
                 personalisation=personalisation,
             )
-            print(f"Email sent!")
+            print("Email sent!")
     else:
         print(f"{template_type} send cancelled")
 
