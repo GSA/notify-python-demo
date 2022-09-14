@@ -1,8 +1,23 @@
 import os
 
 from dotenv import load_dotenv
-from pprint import pprint
+from tabulate import tabulate
 from notifications_python_client.notifications import NotificationsAPIClient
+
+
+def print_table(title, headers, data):
+    """Renders a formatted table."""
+    print(title)
+    print("-" * len(title))
+    print(
+        tabulate(
+            data,
+            headers=headers,
+            tablefmt="pipe",
+            stralign="left",
+        )
+    )
+    print("\n")
 
 
 load_dotenv()
@@ -24,15 +39,18 @@ concat_api_key = "_".join([service_name, iss_uid, user_api_key])
 notifications_client = NotificationsAPIClient(concat_api_key, base_url=base_url)
 
 response = notifications_client.get_all_notifications(template_type="sms")
-print("SMS Log")
-print("Phone#     ", "Status  ", "Completed")
-print("-----------", "--------", "---------")
-for r in response["notifications"]:
-    print(r["phone_number"], f"{r['status']}    ", r["completed_at"])
+sms_headers = ["Phone Number", "Status", "Completed"]
+sms_data = [
+    [r["phone_number"], r["status"], r["completed_at"]]
+    for r in response["notifications"]
+]
+
+print_table("SMS Log", sms_headers, sms_data)
 
 response = notifications_client.get_all_notifications(template_type="email")
-print("\n\nEMail Log")
-print("Email            ", "Status  ", "Completed")
-print("-----------------", "--------", "---------")
-for r in response["notifications"]:
-    print(r["email_address"], f"{r['status']}    ", r["completed_at"])
+email_headers = ["Email Address", "Status", "Completed"]
+email_data = [
+    [r["email_address"], r["status"], r["completed_at"]]
+    for r in response["notifications"]
+]
+print_table("Email Log", email_headers, email_data)
