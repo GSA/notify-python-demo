@@ -1,8 +1,11 @@
 import os
 import re
+import time
 
 from dotenv import load_dotenv
 from notifications_python_client.notifications import NotificationsAPIClient
+
+import log_viewer
 
 # hard-code API URL to local dev location
 base_url = "http://localhost:6011"
@@ -17,8 +20,6 @@ phone_number = os.environ.get("PHONE_NUMBER")
 send_email_address = os.environ.get("SEND_EMAIL_ADDRESS")
 
 concat_api_key = "_".join([service_name, iss_uid, user_api_key])
-
-# response = notifications_client.get_template(template_id)
 
 
 def greeting():
@@ -75,15 +76,18 @@ def prompt_to_send_it(client, template_type, template_id, personalisation):
                 template_id=template_id,
                 personalisation=personalisation,
             )
-            print(f"SMS sent to {phone_number}:")
-            print(response["content"]["body"])
+            print(f"Sending SMS to {phone_number}...")
+            time.sleep(3)
+            log_viewer.sms_log_table(client, id=response["id"])
         else:
             response = client.send_email_notification(
                 email_address=send_email_address,  # currently hard-coded from .env
                 template_id=template_id,
                 personalisation=personalisation,
             )
-            print("Email sent!")
+            print(f"Sending email to {send_email_address}...")
+            time.sleep(2)
+            log_viewer.email_log_table(client, id=response["id"])
     else:
         print(f"{template_type} send cancelled")
 

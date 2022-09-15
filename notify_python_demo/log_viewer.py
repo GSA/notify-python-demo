@@ -2,55 +2,64 @@ import os
 
 from dotenv import load_dotenv
 from tabulate import tabulate
+from colorama import init, Back, Fore
 from notifications_python_client.notifications import NotificationsAPIClient
 
 
-def print_table(title, headers, data):
-    """Renders a formatted table."""
-    print(title)
-    print("-" * len(title))
+def __print_table(client, template_type, id):
+    init()
+    if template_type == "sms":
+        vals = {"header": "Phone Number", "key": "phone_number"}
+    else:
+        vals = {"header": "Email Address", "key": "email_address"}
+    response = client.get_all_notifications(template_type=template_type)
+    headers = ["", vals["header"], "Status", "Completed"]
+    data = []
+    for r in response["notifications"]:
+        row = ["", r[vals["key"]], r["status"], r["completed_at"]]
+        if r["id"] == id:
+            row[0] = "->"
+            row = [f"{Back.YELLOW}{Fore.BLACK}{e}{Fore.RESET}{Back.RESET}" for e in row]
+        data.append(row)
+    print(f"{template_type.upper()} Log")
     print(
         tabulate(
             data,
             headers=headers,
-            tablefmt="pipe",
+            tablefmt="simple_outline",
             stralign="left",
         )
     )
     print("\n")
 
 
-load_dotenv()
+def sms_log_table(client, id=None):
+    __print_table(client, template_type="sms", id=id)
 
-# hard-code API URL to local dev location
-base_url = "http://localhost:6011"
 
-# STUFF FROM .env file
-user_api_key = os.environ.get("USER_API_KEY")
-admin_api_key = os.environ.get("ADMIN_API_KEY")
-iss_uid = os.environ.get("ISS_UUID")
-service_name = os.environ.get("SERVICE_NAME")
-template_id = os.environ.get("TEMPLATE_ID")
-phone_number = os.environ.get("PHONE_NUMBER")
+def email_log_table(client, id=None):
+    __print_table(client, template_type="email", id=id)
 
-concat_api_key = "_".join([service_name, iss_uid, user_api_key])
 
-# must pass in base_url, as the default is notify.uk's production URL
-notifications_client = NotificationsAPIClient(concat_api_key, base_url=base_url)
+def main():
+    # hard-code API URL to local dev location
+    base_url = "http://localhost:6011"
 
-response = notifications_client.get_all_notifications(template_type="sms")
-sms_headers = ["Phone Number", "Status", "Completed"]
-sms_data = [
-    [r["phone_number"], r["status"], r["completed_at"]]
-    for r in response["notifications"]
-]
+    # STUFF FROM .env file
+    load_dotenv()
+    user_api_key = os.environ.get("USER_API_KEY")
+    iss_uid = os.environ.get("ISS_UUID")
+    service_name = os.environ.get("SERVICE_NAME")
 
-print_table("SMS Log", sms_headers, sms_data)
+    concat_api_key = "_".join([service_name, iss_uid, user_api_key])
 
-response = notifications_client.get_all_notifications(template_type="email")
-email_headers = ["Email Address", "Status", "Completed"]
-email_data = [
-    [r["email_address"], r["status"], r["completed_at"]]
-    for r in response["notifications"]
-]
-print_table("Email Log", email_headers, email_data)
+    # must pass in base_url, as the default is notify.uk's production URL
+    notifications_client = NotificationsAPIClient(concat_api_key, base_url=base_url)
+
+    # print the log tables
+    sms_log_table(notifications_client)
+    email_log_table(notifications_client)
+
+
+if __name__ == "__main__":
+    main()
