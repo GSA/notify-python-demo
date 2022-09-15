@@ -6,7 +6,7 @@ from colorama import init, Back, Fore
 from notifications_python_client.notifications import NotificationsAPIClient
 
 
-def __print_table(client, template_type, id):
+def __print_table(client, template_type, id, limit=None):
     init()
     if template_type == "sms":
         vals = {"header": "Phone Number", "key": "phone_number"}
@@ -21,10 +21,14 @@ def __print_table(client, template_type, id):
             row[0] = "->"
             row = [f"{Back.YELLOW}{Fore.BLACK}{e}{Fore.RESET}{Back.RESET}" for e in row]
         data.append(row)
-    print(f"{template_type.upper()} Log")
+    if limit:
+        data = data[0:limit]
+        print(f"{template_type.upper()} Log (last {str(limit)} entries)")
+    else:
+        print(f"{template_type.upper()} Log")
     print(
         tabulate(
-            data,
+            data[0:limit],
             headers=headers,
             tablefmt="simple_outline",
             stralign="left",
@@ -33,12 +37,12 @@ def __print_table(client, template_type, id):
     print("\n")
 
 
-def sms_log_table(client, id=None):
-    __print_table(client, template_type="sms", id=id)
+def sms_log_table(client, id=None, limit=None):
+    __print_table(client, template_type="sms", id=id, limit=limit)
 
 
-def email_log_table(client, id=None):
-    __print_table(client, template_type="email", id=id)
+def email_log_table(client, id=None, limit=None):
+    __print_table(client, template_type="email", id=id, limit=limit)
 
 
 def main():

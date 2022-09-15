@@ -76,9 +76,26 @@ def prompt_to_send_it(client, template_type, template_id, personalisation):
                 template_id=template_id,
                 personalisation=personalisation,
             )
+            id = response["id"]
             print(f"Sending SMS to {phone_number}...")
-            time.sleep(3)
-            log_viewer.sms_log_table(client, id=response["id"])
+            log_viewer.sms_log_table(client, id=id, limit=5)
+            print(
+                "Waiting up to 10 seconds to verify SMS sent successfully...",
+                end="",
+                flush=True,
+            )
+            inc = 1
+            while inc <= 10:
+                inc = inc + 1
+                response = client.get_notification_by_id(id)
+                if response["completed_at"] is None:
+                    time.sleep(1)
+                    print(".", end="", flush=True)
+                else:
+                    print("", flush=True)
+                    log_viewer.sms_log_table(client, id=response["id"], limit=5)
+                    break
+            print("", flush=True)
         else:
             response = client.send_email_notification(
                 email_address=send_email_address,  # currently hard-coded from .env
@@ -87,7 +104,7 @@ def prompt_to_send_it(client, template_type, template_id, personalisation):
             )
             print(f"Sending email to {send_email_address}...")
             time.sleep(2)
-            log_viewer.email_log_table(client, id=response["id"])
+            log_viewer.email_log_table(client, id=response["id"], limit=5)
     else:
         print(f"{template_type} send cancelled")
 
