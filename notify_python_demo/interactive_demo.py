@@ -1,8 +1,10 @@
+import sys
 import os
 import re
 import time
 
 from dotenv import load_dotenv
+from colorama import init, Back, Fore
 from notifications_python_client.notifications import NotificationsAPIClient
 
 import log_viewer
@@ -23,10 +25,17 @@ concat_api_key = "_".join([service_name, iss_uid, user_api_key])
 
 
 def greeting():
-    title = "* U.S. Notify Python Client Demo *"
-    print("*" * len(title))
-    print(title)
-    print("*" * len(title))
+    init()
+    title = " * U.S. Notify Python Client Demo * "
+    short_stripe = " " * 28
+    long_stripe = " " * 37
+    print(f"{Back.BLUE} ******* {Back.RESET}{Back.WHITE}{short_stripe}{Back.RESET}")
+    print(f"{Back.BLUE} ******* {Back.RESET}{Back.RED}{short_stripe}{Back.RESET}")
+    print(f"{Back.BLUE} ******* {Back.RESET}{Back.WHITE}{short_stripe}{Back.RESET}")
+    print(f"{Back.RED}{long_stripe}{Back.RESET}")
+    print(f"{Back.WHITE}{Fore.BLACK}{title} {Fore.RESET}{Back.RESET}")
+    print(f"{Back.RED}{long_stripe}{Back.RESET}")
+    print(f"{Back.WHITE}{long_stripe}{Back.RESET}")
 
 
 def intro():
