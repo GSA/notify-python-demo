@@ -40,18 +40,25 @@ def check_and_process_csv_file(notifications_client, args):
             for col in column_names:
                 if col not in ACCEPTABLE_COLUMNS:
                     logging.error("Cannot have {} column name".format(col))
+            if "number" in column_names:
+                # do stuff to send bulk sms
+                for row in reader:
+                    send_sms(notifications_client, row["number"], day_of_week=row["day_of_week"], colour=row["colour"])
+            if "email" in column_names:
+                # send email
+                pass
             pass
 
 
-def send_sms(notifications_client, number):
+def send_sms(notifications_client, number, **kwargs):
     # todo: validate phone number?
     # todo: make template_id a param?
     response = notifications_client.send_sms_notification(
         phone_number=number,
         template_id="8ccb6087-abf9-469e-bce5-9a3b361dd4c2",
         personalisation={
-            "day_of_week": "Wednesday",
-            "colour": "Purple"
+            "day_of_week": kwargs.get("day_of_week"),
+            "colour": kwargs.get("colour")
         }
     )
     print(response)
