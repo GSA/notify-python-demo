@@ -89,6 +89,17 @@ def print_send_description(template_type, template_id, personalisation):
     print("")
 
 
+def print_logview_description(template_type):
+    __divider()
+    print("")
+    print(" Notify keeps a message log that can be queried by the API.")
+    print(f" To get the {template_type} log, this client method can be issued:")
+    print("")
+    __command(f"response = client.get_all_notifications(template_type={template_type})")
+    print("")
+    __divider()
+
+
 def select_template(client, template_type):
     response = client.get_all_templates(template_type=template_type)
     templates = [x["body"] for x in response["templates"]]
@@ -125,6 +136,7 @@ def prompt_to_send_it(client, template_type, template_id, personalisation):
     send_it = input("Y or N [default: N] --> ")
     if send_it.lower() == "y":
         # send it!
+        print_logview_description(template_type)
         if template_type == "sms":
             response = client.send_sms_notification(
                 phone_number=phone_number,  # currently hard-coded from .env
