@@ -16,12 +16,12 @@ base_url = "http://localhost:6011"
 load_dotenv()
 user_api_key = os.environ.get("USER_API_KEY")
 admin_api_key = os.environ.get("ADMIN_API_KEY")
-iss_uid = os.environ.get("ISS_UUID")
+iss_uuid = os.environ.get("ISS_UUID")
 service_name = os.environ.get("SERVICE_NAME")
 phone_number = os.environ.get("PHONE_NUMBER")
 send_email_address = os.environ.get("SEND_EMAIL_ADDRESS")
 
-concat_api_key = "_".join([service_name, iss_uid, user_api_key])
+concat_api_key = "_".join([service_name, iss_uuid, user_api_key])
 
 
 def greeting():
