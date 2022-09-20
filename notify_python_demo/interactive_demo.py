@@ -66,7 +66,9 @@ def print_template_description(template_type):
     print("")
     print(" For a given service and template type (SMS, email, letter),")
     print(" a list of templates and their associated metadata can be retrieved.")
-    print(" This is the Python function used to retrieve the {template_type} below:")
+    print(
+        f" This is the Python function used to retrieve the {template_type} templates:"
+    )
     print("")
     __command(f"response = client.get_all_templates(template_type={template_type})")
     print("")
