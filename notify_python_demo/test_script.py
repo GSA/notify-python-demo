@@ -8,7 +8,7 @@ from notifications_python_client.notifications import NotificationsAPIClient
 
 
 # todo: figure out how to do personalisation object in csv??
-ACCEPTABLE_COLUMNS = ["number", "email", "template_id", "day_of_week", "colour"]
+ACCEPTABLE_COLUMNS = ["number", "email", "first_name", "template_id", "day_of_week", "colour"]
 
 def parse_args():
     """
@@ -39,23 +39,24 @@ def check_and_process_csv_file(notifications_client, args):
             print("Passed in columns: {}".format(column_names))
             for col in column_names:
                 if col not in ACCEPTABLE_COLUMNS:
-                    logging.error("Cannot have {} column name".format(col))
+                    raise logging.error("Cannot have {} column name".format(col))
             if "number" in column_names:
                 # do stuff to send bulk sms
                 for row in reader:
-                    send_sms(notifications_client, row["number"], day_of_week=row["day_of_week"], colour=row["colour"])
+                    send_sms(notifications_client, number=row["number"], day_of_week=row["day_of_week"], 
+                        colour=row["colour"], template_id=row["template_id"])
             if "email" in column_names:
                 # send email
-                pass
-            pass
+                for row in reader:
+                    send_email(notifications_client, email=row["email"], first_name=row["first_name"], 
+                        template_id=row["template_id"])
 
 
-def send_sms(notifications_client, number, **kwargs):
-    # todo: validate phone number?
+def send_sms(notifications_client, **kwargs):
     # todo: make template_id a param?
     response = notifications_client.send_sms_notification(
-        phone_number=number,
-        template_id="8ccb6087-abf9-469e-bce5-9a3b361dd4c2",
+        phone_number=kwargs.get("number"),
+        template_id=kwargs.get("template_id"),
         personalisation={
             "day_of_week": kwargs.get("day_of_week"),
             "colour": kwargs.get("colour")
@@ -64,13 +65,14 @@ def send_sms(notifications_client, number, **kwargs):
     print(response)
 
 
-def send_email(notifications_client, email):
-    # todo: make template_id a param?
+def send_email(notifications_client, **kwargs):
     # todo: add personalisations according to template_id?
     response = notifications_client.send_email_notification(
-        email_address=email,
-        template_id="figure_this_out",
-        # personalisation={}
+        email_address=kwargs.get("email"),
+        template_id=kwargs.get("template_id"),
+        personalisation={
+            "first_name": kwargs.get("first_name")
+        }
     )
     print(response)
 
@@ -97,12 +99,12 @@ def main():
         if not args.number:
             logging.error("Cannot send sms without phone number")
         else:
-            send_sms(notifications_client, args.number)
+            send_sms(notifications_client, number=args.number)
     elif args.send_email:
         if not args.email:
             logging.error("Cannot send email without email address")
         else:
-            send_email(notifications_client, args.email)
+            send_email(notifications_client, email=args.email)
 
 
 if __name__ == '__main__':
