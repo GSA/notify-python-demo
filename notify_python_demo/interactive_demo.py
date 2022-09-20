@@ -29,6 +29,7 @@ def greeting():
     title = " * U.S. Notify Python Client Demo * "
     short_stripe = " " * 28
     long_stripe = " " * 37
+    print("")
     print(f"{Back.BLUE} ******* {Back.RESET}{Back.WHITE}{short_stripe}{Back.RESET}")
     print(f"{Back.BLUE} ******* {Back.RESET}{Back.RED}{short_stripe}{Back.RESET}")
     print(f"{Back.BLUE} ******* {Back.RESET}{Back.WHITE}{short_stripe}{Back.RESET}")
@@ -36,6 +37,13 @@ def greeting():
     print(f"{Back.WHITE}{Fore.BLACK}{title} {Fore.RESET}{Back.RESET}")
     print(f"{Back.RED}{long_stripe}{Back.RESET}")
     print(f"{Back.WHITE}{long_stripe}{Back.RESET}")
+    print(f"{Fore.RESET}")
+    print(" This program demonstrates some of the capabilities of the Notify Python")
+    print(" client and the underlying API that drives it. Using the Notify API, you")
+    print(" can access a live service's templates, send SMS and emails to recpients,")
+    print(" and check detailed statuses of sent messages.")
+    print("")
+    __divider()
 
 
 def intro():
@@ -45,10 +53,60 @@ def intro():
     return send_type.lower()
 
 
+def __divider():
+    print("-" * 80)
+
+
+def __command(command):
+    print(f"{Fore.YELLOW}{Back.BLACK}{command}{Fore.RESET}{Back.RESET}")
+
+
+def print_template_description(template_type):
+    __divider()
+    print("")
+    print(" For a given service and template type (SMS, email, letter),")
+    print(" a list of templates and their associated metadata can be retrieved.")
+    print(
+        f" This is the Python function used to retrieve the {template_type} templates:"
+    )
+    print("")
+    __command(f"response = client.get_all_templates(template_type={template_type})")
+    print("")
+
+
+def print_send_description(template_type, template_id, personalisation):
+    __divider()
+    print("")
+    print(" Once a template is selected and any template variables are set,")
+    print(f" sending {template_type} is a simple call to the Python client object")
+    print(" To sent the selected template, the client method is:")
+    print("")
+    __command("response = client.send_sms_notification(")
+    __command(f"\t\tphone_number='{phone_number}',")
+    __command(f"\t\ttemplate_id='{template_id}',")
+    __command(f"\t\tpersonalisation={personalisation})")
+    print("")
+    __divider()
+
+    print("")
+
+
+def print_logview_description(template_type):
+    __divider()
+    print("")
+    print(" Notify keeps a message log that can be queried by the API.")
+    print(f" To get the {template_type} log, this client method can be issued:")
+    print("")
+    __command(f"response = client.get_all_notifications(template_type={template_type})")
+    print("")
+    __divider()
+
+
 def select_template(client, template_type):
     response = client.get_all_templates(template_type=template_type)
     templates = [x["body"] for x in response["templates"]]
 
+    print_template_description(template_type)
     print(f"\nSelect one of the following {template_type} templates:")
     print("-" * 30)
     [print(f"{idx}. {template}") for idx, template in enumerate(templates, start=1)]
@@ -75,10 +133,12 @@ def select_template(client, template_type):
 
 
 def prompt_to_send_it(client, template_type, template_id, personalisation):
+    print_send_description(template_type, template_id, personalisation)
     print("Do you want to send it?")
     send_it = input("Y or N [default: N] --> ")
     if send_it.lower() == "y":
         # send it!
+        print_logview_description(template_type)
         if template_type == "sms":
             response = client.send_sms_notification(
                 phone_number=phone_number,  # currently hard-coded from .env
