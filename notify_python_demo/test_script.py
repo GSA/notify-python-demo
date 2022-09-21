@@ -62,6 +62,7 @@ def send_sms(notifications_client, **kwargs):
             "colour": kwargs.get("colour")
         }
     )
+    print("--------------------")
     print(response)
 
 
@@ -74,6 +75,7 @@ def send_email(notifications_client, **kwargs):
             "first_name": kwargs.get("first_name")
         }
     )
+    print("-------------------")
     print(response)
 
 
