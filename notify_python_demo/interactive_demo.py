@@ -1,10 +1,12 @@
-import sys
 import os
 import re
-import time
+from time import sleep
 
 from dotenv import load_dotenv
-from colorama import init, Back, Fore
+from rich.console import Console
+from rich.color import Color
+from rich.prompt import Prompt
+from rich import print
 from notifications_python_client.notifications import NotificationsAPIClient
 
 import log_viewer
@@ -25,40 +27,41 @@ concat_api_key = "_".join([service_name, iss_uuid, user_api_key])
 
 
 def greeting():
-    init()
-    title = " * U.S. Notify Python Client Demo * "
-    short_stripe = " " * 28
+    title = " * U.S. Notify Python Client Demo *  "
+    short_stripe = " " * 26
     long_stripe = " " * 37
+    c = Console()
     print("")
-    print(f"{Back.BLUE} ******* {Back.RESET}{Back.WHITE}{short_stripe}{Back.RESET}")
-    print(f"{Back.BLUE} ******* {Back.RESET}{Back.RED}{short_stripe}{Back.RESET}")
-    print(f"{Back.BLUE} ******* {Back.RESET}{Back.WHITE}{short_stripe}{Back.RESET}")
-    print(f"{Back.RED}{long_stripe}{Back.RESET}")
-    print(f"{Back.WHITE}{Fore.BLACK}{title} {Fore.RESET}{Back.RESET}")
-    print(f"{Back.RED}{long_stripe}{Back.RESET}")
-    print(f"{Back.WHITE}{long_stripe}{Back.RESET}")
-    print(f"{Fore.RESET}")
-    print(" This program demonstrates some of the capabilities of the Notify Python")
-    print(" client and the underlying API that drives it. Using the Notify API, you")
-    print(" can access a live service's templates, send SMS and emails to recpients,")
-    print(" and check detailed statuses of sent messages.")
-    print("")
+    c.print(" ********* ", style="white on navy_blue", end="")
+    c.print(short_stripe, style="black on white")
+    c.print(" ********* ", style="white on navy_blue", end="")
+    c.print(short_stripe, style="black on red")
+    c.print(" ********* ", style="white on navy_blue", end="")
+    c.print(short_stripe, style="black on white")
+    c.print(" ********* ", style="white on navy_blue", end="")
+    c.print(short_stripe, style="black on red")
+
+    c.print(title, style="black on white")
+    c.print(long_stripe, style="black on red")
+    c.print(long_stripe, style="black on white")
+    c.print(long_stripe, style="black on red")
+
+    c.print(" This program demonstrates some of the capabilities of the Notify Python")
+    c.print(" client and the underlying API that drives it. Using the Notify API, you")
+    c.print(" can access a live service's templates, send SMS and emails to recpients,")
+    c.print(" and check detailed statuses of sent messages.")
     __divider()
 
 
 def intro():
-    send_type = input("Would you like to send an SMS or Email? --> ")
+    send_type = Prompt.ask("Would you like to send an SMS or Email? --> ")
     while send_type.lower() not in ["sms", "email"]:
-        send_type = input("Enter either SMS or Email for send type --> ")
+        send_type = Prompt.ask("Enter either SMS or Email for send type --> ")
     return send_type.lower()
 
 
 def __divider():
-    print("-" * 80)
-
-
-def __command(command):
-    print(f"{Fore.YELLOW}{Back.BLACK}{command}{Fore.RESET}{Back.RESET}")
+    print("[red]-[/red]" * 80)
 
 
 def print_template_description(template_type):
@@ -70,7 +73,7 @@ def print_template_description(template_type):
         f" This is the Python function used to retrieve the {template_type} templates:"
     )
     print("")
-    __command(f"response = client.get_all_templates(template_type={template_type})")
+    print(f"response = client.get_all_templates(template_type={template_type})")
     print("")
 
 
@@ -81,10 +84,10 @@ def print_send_description(template_type, template_id, personalisation):
     print(f" sending {template_type} is a simple call to the Python client object")
     print(" To sent the selected template, the client method is:")
     print("")
-    __command("response = client.send_sms_notification(")
-    __command(f"\t\tphone_number='{phone_number}',")
-    __command(f"\t\ttemplate_id='{template_id}',")
-    __command(f"\t\tpersonalisation={personalisation})")
+    print("response = client.send_sms_notification(")
+    print(f"\t\tphone_number='{phone_number}',")
+    print(f"\t\ttemplate_id='{template_id}',")
+    print(f"\t\tpersonalisation={personalisation})")
     print("")
     __divider()
 
@@ -97,7 +100,7 @@ def print_logview_description(template_type):
     print(" Notify keeps a message log that can be queried by the API.")
     print(f" To get the {template_type} log, this client method can be issued:")
     print("")
-    __command(f"response = client.get_all_notifications(template_type={template_type})")
+    print(f"response = client.get_all_notifications(template_type={template_type})")
     print("")
     __divider()
 
@@ -113,9 +116,9 @@ def select_template(client, template_type):
     print("-" * 30)
 
     valid_selections = [str(idx) for idx, x in enumerate(templates, start=1)]
-    template_selection = input("--> ")
+    template_selection = Prompt.ask("--> ")
     while template_selection not in valid_selections:
-        template_selection = input(
+        template_selection = Prompt.ask(
             f"Valid Selections are: {', '.join(valid_selections)} --> "
         )
 
@@ -125,7 +128,7 @@ def select_template(client, template_type):
     pattern = re.compile(r"\(\((.*?)\)\)")
     match = pattern.findall(template["body"])
     for m in match:
-        personalisation[m] = input(
+        personalisation[m] = Prompt.ask(
             f"\nWhat value would you like to send for (({m})) --> "
         )
 
@@ -134,8 +137,7 @@ def select_template(client, template_type):
 
 def prompt_to_send_it(client, template_type, template_id, personalisation):
     print_send_description(template_type, template_id, personalisation)
-    print("Do you want to send it?")
-    send_it = input("Y or N [default: N] --> ")
+    send_it = Prompt.ask("Do you want to send it? (y|N) --> ")
     if send_it.lower() == "y":
         # send it!
         print_logview_description(template_type)
@@ -154,17 +156,23 @@ def prompt_to_send_it(client, template_type, template_id, personalisation):
                 flush=True,
             )
             inc = 1
-            while inc <= 10:
-                inc = inc + 1
-                response = client.get_notification_by_id(id)
-                if response["completed_at"] is None:
-                    time.sleep(1)
-                    print(".", end="", flush=True)
-                else:
-                    print("", flush=True)
-                    log_viewer.sms_log_table(client, id=response["id"], limit=5)
-                    break
-            print("", flush=True)
+            console = Console()
+            msg = "[bold green]Waiting for successful send..."
+            success = False
+            with console.status(msg):
+                while inc <= 10:
+                    inc = inc + 1
+                    response = client.get_notification_by_id(id)
+                    if response["completed_at"] is None:
+                        sleep(1)
+                        # print(".", end="", flush=True)
+                        console.log(msg)
+                    else:
+                        success = True
+            if success is True:
+                print("", flush=True)
+                log_viewer.sms_log_table(client, id=response["id"], limit=5)
+                print("", flush=True)
         else:
             response = client.send_email_notification(
                 email_address=send_email_address,  # currently hard-coded from .env
@@ -172,7 +180,7 @@ def prompt_to_send_it(client, template_type, template_id, personalisation):
                 personalisation=personalisation,
             )
             print(f"Sending email to {send_email_address}...")
-            time.sleep(2)
+            sleep(2)
             log_viewer.email_log_table(client, id=response["id"], limit=5)
     else:
         print(f"{template_type} send cancelled")
