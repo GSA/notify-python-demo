@@ -34,6 +34,13 @@ optional arguments:
   --filename FILENAME   csv file name
   ```
 
+To send via CSV, you will need the `--csv` `bool` flag, the `--path` and the `--filename` options.
+Currently, the csv send functionality is set to send bulk messages per template. This means that you will
+need to have the `template_id` and all of the `personalisation` attributes will need to be individual columns in your csv.
+
+For example, if you have a template which has two personalisations: `((day_of_the_week))` and `((color))`,
+you will need to have a `day_of_the_week` column and a `color` column in your csv, in addition to either `number` or `email`
+
 # interactive_demo.py
 
 This script is an interactive demonstration of sending SMS or email from Notify. It will read templates and determine if there are any template variables to populate, then will send the message and give real-time updates of the message success in sending.
