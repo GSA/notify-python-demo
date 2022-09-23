@@ -70,7 +70,7 @@ def check_and_process_csv_file(notifications_client, args):
                         template_id=row["template_id"],
                     )
             if "email" in column_names:
-                # send email
+                # do stuff to send bulk email
                 for row in reader:
                     send_email(
                         notifications_client,
@@ -81,7 +81,6 @@ def check_and_process_csv_file(notifications_client, args):
 
 
 def send_sms(notifications_client, **kwargs):
-    # todo: make template_id a param?
     response = notifications_client.send_sms_notification(
         phone_number=kwargs.get("number"),
         template_id=kwargs.get("template_id"),
@@ -95,7 +94,6 @@ def send_sms(notifications_client, **kwargs):
 
 
 def send_email(notifications_client, **kwargs):
-    # todo: add personalisations according to template_id?
     response = notifications_client.send_email_notification(
         email_address=kwargs.get("email"),
         template_id=kwargs.get("template_id"),
