@@ -39,7 +39,7 @@ Currently, the csv send functionality is set to send bulk messages per template.
 need to have the `template_id` and all of the `personalisation` attributes will need to be individual columns in your csv. And, as of now, you will need to modify the code to match those personalisations.
 
 For example, if you have a template which has two personalisations: `((day_of_the_week))` and `((color))`,
-you will need to have a `day_of_the_week` column and a `color` column in your csv, in addition to either `number` or `email`
+you will need to have a `day_of_the_week` column and a `color` column in your csv, in addition to either `number` or `email` and `template_id`.
 
 # interactive_demo.py
 
