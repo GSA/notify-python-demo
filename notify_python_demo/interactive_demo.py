@@ -11,11 +11,9 @@ from notifications_python_client.notifications import NotificationsAPIClient
 
 import log_viewer
 
-# hard-code API URL to local dev location
-base_url = "http://localhost:6011"
-
 # STUFF FROM .env file
 load_dotenv()
+base_url = os.environ.get("BASE_URL")
 user_api_key = os.environ.get("USER_API_KEY")
 admin_api_key = os.environ.get("ADMIN_API_KEY")
 iss_uuid = os.environ.get("ISS_UUID")
