@@ -109,9 +109,9 @@ def select_template(client, template_type):
 
     print_template_description(template_type)
     print(f"\nSelect one of the following {template_type} templates:")
-    print("-" * 30)
+    __divider()
     [print(f"{idx}. {template}") for idx, template in enumerate(templates, start=1)]
-    print("-" * 30)
+    __divider()
 
     valid_selections = [str(idx) for idx, x in enumerate(templates, start=1)]
     template_selection = Prompt.ask("--> ")
@@ -163,7 +163,6 @@ def prompt_to_send_it(client, template_type, template_id, personalisation):
                     response = client.get_notification_by_id(id)
                     if response["completed_at"] is None:
                         sleep(1)
-                        # print(".", end="", flush=True)
                         console.log(msg)
                     else:
                         success = True
