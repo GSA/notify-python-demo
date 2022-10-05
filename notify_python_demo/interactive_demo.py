@@ -4,7 +4,6 @@ from time import sleep
 
 from dotenv import load_dotenv
 from rich.console import Console
-from rich.color import Color
 from rich.prompt import Prompt
 from rich import print
 from notifications_python_client.notifications import NotificationsAPIClient
