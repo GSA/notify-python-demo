@@ -14,6 +14,7 @@ def __print_table(client, template_type, id, limit=None):
         vals = {"header": "Email Address", "key": "email_address"}
     response = client.get_all_notifications(template_type=template_type)
     data = []
+
     for r in response["notifications"]:
         row = ["", r[vals["key"]], r["status"], r["completed_at"]]
         if r["id"] == id:
@@ -43,11 +44,9 @@ def email_log_table(client, id=None, limit=None):
 
 
 def main():
-    # hard-code API URL to local dev location
-    base_url = "http://localhost:6011"
-
     # STUFF FROM .env file
     load_dotenv()
+    base_url = os.environ.get("BASE_URL")
     user_api_key = os.environ.get("USER_API_KEY")
     iss_uid = os.environ.get("ISS_UUID")
     service_name = os.environ.get("SERVICE_NAME")
