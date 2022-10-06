@@ -1,16 +1,19 @@
 # Notify Python Client Demo QUICKSTART
 
-* Doing this demo requires a running local Notify API. Run the notifications-api repo in a dev container. In a container terminal, run `make run-flask`. After that's running, in another container terminal run `make run-celery`. This will get the API running locally and the base URL will be http://localhost:6011
-* copy sample.env to .env
-* look at notifications-api .env file and copy the value in ADMIN_CLIENT_SECRET to ADMIN_API_KEY
-* through the Notify web UI, choose a service that the demo will interact with, and make sure that a few templates have been mocked up for both SMS and email.
-* login to Notify web UI and generate a user API key for that service (XXX: better instructions here)
-* copy that API key into .env for the USER_API_KEY value
-* install `poetry` locally (https://python-poetry.org/docs/)
-* after `poetry` is installed, run `poetry install`, which will create a virtual environment for running the demo, including all package dependencies
-* run `poetry shell` to invoke a shell using this new virtual environment
-* there are three demo files available, all in the notify_python_demo/ folder: `test_script.py`, `interactive_demo.py`, and `log_viewer.py`.
-* any of these scripts can be invoked with `python notify_python_demo/<script>.py`. Details below.
+- **Doing this demo requires a running local Notify API and Notify Admin**. Follow [Notify API's Quickstart](https://github.com/GSA/notifications-api#quickstart) and get the API running in a VS Code docker container. After this is up and confirmed running, follow [Notify Admin's Quickstart](https://github.com/GSA/notifications-admin#quickstart) to get the web UI up and running. 
+- In the Notify web UI, create a login for a user and go through all the necessary hoops to verify the account. Using a dispostable.com email address is a good way to configure an ephemeral user for the service and avoids any pitfalls of spam filters and the like. Note: after registering you will need to go to dispostable.com to access the inbox to verify the address to AWS..
+- In this repo, copy the file `sample.env` to `.env`
+- Go to the Notify web UI (typically http://localhost:6011), and choose (or create) a service that the demo will interact with. Make sure this service has a few templates mocked up for both SMS and email.
+- From the chosen service, go to the dashboard and then select Login to Notify web UI and generate a user API key for that service.
+  - Copy the API key to your clipboard.
+  - This API key string is composed of three sections, separated by hyphens: `[SERVICE_NAME]-[ISS_UUID]-[USER_API_KEY]`.
+    - The name of your API key as you named it in the Web UI is the first section. Copy this value into the .env file for the variable `SERVICE_NAME`.
+    - The remaining two sections are of equal length, 36 characters. Split the string into 36 character sections (removing the hyphen between the two), and copy them both into the .env file for the values of `ISS_UUID` and `USER_API_KEY`, respectively.
+- Install `poetry` locally (https://python-poetry.org/docs/)
+- After `poetry` is installed, from the home directory of this repository run `poetry install`. This will create a virtual environment for running the demo, including all package dependencies
+- Run `poetry shell` to invoke a shell using this new virtual environment.
+- There are three demo files available, all in the notify_python_demo/ folder: `test_script.py`, `interactive_demo.py`, and `log_viewer.py`.
+- Any of these scripts can now be invoked with `python notify_python_demo/<script>.py`. Details on the individual scripts are below.
 
 # test_script.py
 
@@ -42,7 +45,7 @@ This script is an interactive demonstration of sending SMS or email from Notify.
 
 # log_viewer.py
 
-This script will dump the SMS and email logs in tabular format to the console.
+This script will dump the SMS and email logs for a service in tabular format to the console.
 
 `python notify_python_demo/log_viewer.py`
 

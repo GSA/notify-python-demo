@@ -1,4 +1,5 @@
 import os
+import sys
 import re
 from time import sleep
 
@@ -14,7 +15,6 @@ import log_viewer
 load_dotenv()
 base_url = os.environ.get("BASE_URL")
 user_api_key = os.environ.get("USER_API_KEY")
-admin_api_key = os.environ.get("ADMIN_API_KEY")
 iss_uuid = os.environ.get("ISS_UUID")
 service_name = os.environ.get("SERVICE_NAME")
 phone_number = os.environ.get("PHONE_NUMBER")
@@ -113,7 +113,7 @@ def select_template(client, template_type):
     __divider()
 
     valid_selections = [str(idx) for idx, x in enumerate(templates, start=1)]
-    template_selection = Prompt.ask("--> ")
+    template_selection = Prompt.ask(f"({', '.join(valid_selections)})--> ")
     while template_selection not in valid_selections:
         template_selection = Prompt.ask(
             f"Valid Selections are: {', '.join(valid_selections)} --> "
@@ -200,4 +200,8 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except KeyboardInterrupt:
+        print()
+        sys.exit(1)
