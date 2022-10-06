@@ -1,9 +1,12 @@
 # Notify Python Client Demo QUICKSTART
 
-- **Doing this demo requires a running local Notify API and Notify Admin**. Follow [Notify API's Quickstart](https://github.com/GSA/notifications-api#quickstart) and get the API running in a VS Code docker container. After this is up and confirmed running, follow [Notify Admin's Quickstart](https://github.com/GSA/notifications-admin#quickstart) to get the web UI up and running. 
+- **Doing this demo requires a running Notify API and Notify Admin**.
+- To create a local development instance of Notify API and Notify Admin:
+   - Follow [Notify API's Quickstart](https://github.com/GSA/notifications-api#quickstart) and get the API running in a VS Code docker container. After this is up and confirmed running, follow [Notify Admin's Quickstart](https://github.com/GSA/notifications-admin#quickstart) to get the web UI up and running. 
 - In the Notify web UI, create a login for a user and go through all the necessary hoops to verify the account. Using a dispostable.com email address is a good way to configure an ephemeral user for the service and avoids any pitfalls of spam filters and the like. Note: after registering you will need to go to dispostable.com to access the inbox to verify the address to AWS..
 - In this repo, copy the file `sample.env` to `.env`
-- Go to the Notify web UI (typically http://localhost:6011), and choose (or create) a service that the demo will interact with. Make sure this service has a few templates mocked up for both SMS and email.
+- In `.env`, configure the BASE_URL to the correct value for the API you will be querying. If running locally, the default of http://localhost:6011 will work without modification. 
+- Go to the Notify web UI and choose (or create) a service that the demo will interact with. Make sure this service has a few templates mocked up for both SMS and email.
 - From the chosen service, go to the dashboard and then select Login to Notify web UI and generate a user API key for that service.
   - Copy the API key to your clipboard.
   - This API key string is composed of three sections, separated by hyphens: `[SERVICE_NAME]-[ISS_UUID]-[USER_API_KEY]`.
