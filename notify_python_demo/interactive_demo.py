@@ -15,7 +15,6 @@ import log_viewer
 load_dotenv()
 base_url = os.environ.get("BASE_URL")
 user_api_key = os.environ.get("USER_API_KEY")
-admin_api_key = os.environ.get("ADMIN_API_KEY")
 iss_uuid = os.environ.get("ISS_UUID")
 service_name = os.environ.get("SERVICE_NAME")
 phone_number = os.environ.get("PHONE_NUMBER")

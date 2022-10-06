@@ -108,7 +108,6 @@ def send_email(notifications_client, **kwargs):
 def main():
     load_dotenv()
     api_key = os.environ.get("USER_API_KEY")
-    admin_api_key = os.environ.get("ADMIN_API_KEY")
     service_id = os.environ.get("ISS_UUID")
     service_key_name = os.environ.get("SERVICE_NAME")
     concat_api_key = "_".join([service_key_name, service_id, api_key])
