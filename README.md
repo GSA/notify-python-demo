@@ -13,7 +13,7 @@
 - After `poetry` is installed, from the home directory of this repository run `poetry install`. This will create a virtual environment for running the demo, including all package dependencies
 - Run `poetry shell` to invoke a shell using this new virtual environment.
 - There are three demo files available, all in the notify_python_demo/ folder: `test_script.py`, `interactive_demo.py`, and `log_viewer.py`.
-- Any of these scripts can now be invoked with `python notify_python_demo/<script>.py`. Details below.
+- Any of these scripts can now be invoked with `python notify_python_demo/<script>.py`. Details on the individual scripts are below.
 
 # test_script.py
 
@@ -45,7 +45,7 @@ This script is an interactive demonstration of sending SMS or email from Notify.
 
 # log_viewer.py
 
-This script will dump the SMS and email logs in tabular format to the console.
+This script will dump the SMS and email logs for a service in tabular format to the console.
 
 `python notify_python_demo/log_viewer.py`
 
