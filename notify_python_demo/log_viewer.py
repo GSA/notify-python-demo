@@ -21,12 +21,12 @@ def __print_table(client, template_type, id, limit=None):
             row[0] = "->"
             row = [f"[yellow on black]{e}[yellow on black]" for e in row]
         data.append(row)
-    title = f"{template_type.upper()} Log"
+    title = f"{template_type.upper()} Service Log"
     if limit:
         data = data[0:limit]
-        title = f"{template_type.upper()} Log (last {str(limit)} entries)"
+        title = f"{title} (last {str(limit)} entries)"
 
-    table = rich_table(title=title, row_styles=["dim", ""])
+    table = rich_table(title=f"{title} {client.base_url}", row_styles=["dim", ""])
     headers = ["", vals["header"], "Status", "Completed"]
     for h in headers:
         table.add_column(h, justify="left")
