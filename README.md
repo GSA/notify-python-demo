@@ -1,9 +1,10 @@
 # Notify Python Client Demo QUICKSTART
 
-* Doing this demo requires a running local Notify API. Run the notifications-api repo in a dev container. In a container terminal, run `make run-flask`. After that's running, in another container terminal run `make run-celery`. This will get the API running locally and the base URL will be http://localhost:6011
-* copy sample.env to .env
-* look at notifications-api .env file and copy the value in ADMIN_CLIENT_SECRET to ADMIN_API_KEY
-* through the Notify web UI, choose a service that the demo will interact with, and make sure that a few templates have been mocked up for both SMS and email.
+* **Doing this demo requires a running local Notify API and Notify Admin**. Follow [Notify API's Quickstart](https://github.com/GSA/notifications-api#quickstart) and get the API running in a VS Code docker container. After this is up and confirmed running, follow [Notify Admin's Quickstart](https://github.com/GSA/notifications-admin#quickstart) to get the web UI up and running. 
+* In the Notify web UI, create a login for a user and go through all the necessary hoops to verify the account. Using a dispostable.com email address is a good way to configure an ephemeral user for the service. Note: you will need to go to dispostable.com to access the inbox to verify the address to AWS.
+* In this repo, copy the file `sample.env` to `.env`
+* Look at your notifications-api `.env` file, and copy the value from `ADMIN_CLIENT_SECRET` to `ADMIN_API_KEY` in this repo's `.env` file.
+* Go to the Notify web UI (typically http://localhost:6011), and choose (or create) a service that the demo will interact with. Make sure this service has a few templates mocked up for both SMS and email.
 * login to Notify web UI and generate a user API key for that service (XXX: better instructions here)
 * copy that API key into .env for the USER_API_KEY value
 * install `poetry` locally (https://python-poetry.org/docs/)
