@@ -115,8 +115,9 @@ def select_template(client, template_type):
     print_template_description(template_type)
     print(f"\nSelect one of the following {template_type} templates:")
     __divider()
-    [print(f"{idx}. {template}") for idx, template in enumerate(templates, start=1)]
-    __divider()
+    for idx, template in enumerate(templates, start=1):
+        print(f"{idx}. {template}")
+        __divider()
 
     valid_selections = [str(idx) for idx, x in enumerate(templates, start=1)]
     template_selection = Prompt.ask(f"({', '.join(valid_selections)})--> ")
@@ -153,28 +154,31 @@ def prompt_to_send_it(client, template_type, template_id, personalisation):
             id = response["id"]
             print(f"Sending SMS to {phone_number}...")
             log_viewer.sms_log_table(client, id=id, limit=5)
-            print(
-                "Waiting up to 10 seconds to verify SMS sent successfully...",
-                end="",
-                flush=True,
-            )
-            inc = 1
-            console = Console()
-            msg = "[bold green]Waiting for successful send..."
-            success = False
-            with console.status(msg):
-                while inc <= 10:
-                    inc = inc + 1
-                    response = client.get_notification_by_id(id)
-                    if response["completed_at"] is None:
-                        sleep(1)
-                        console.log(msg)
-                    else:
-                        success = True
-            if success is True:
-                print("", flush=True)
-                log_viewer.sms_log_table(client, id=response["id"], limit=5)
-                print("", flush=True)
+
+            response = client.get_notification_by_id(id)
+            if response["completed_at"] is None:
+                print(
+                    "Waiting up to 10 seconds to verify SMS sent successfully...",
+                    end="",
+                    flush=True,
+                )
+                inc = 1
+                console = Console()
+                msg = "[bold green]Waiting for successful send..."
+                success = False
+                with console.status(msg):
+                    while inc <= 10:
+                        inc = inc + 1
+                        response = client.get_notification_by_id(id)
+                        if response["completed_at"] is None:
+                            sleep(1)
+                            console.log(msg)
+                        else:
+                            success = True
+                if success is True:
+                    print("", flush=True)
+                    log_viewer.sms_log_table(client, id=response["id"], limit=5)
+                    print("", flush=True)
         else:
             response = client.send_email_notification(
                 email_address=send_email_address,  # currently hard-coded from .env
