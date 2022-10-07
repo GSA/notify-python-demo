@@ -75,14 +75,20 @@ def print_template_description(template_type):
 
 
 def print_send_description(template_type, template_id, personalisation):
+    if template_type == "sms":
+        send_string = f"phone_number='{phone_number}'"
+        object_method = "send_sms_notification"
+    else:
+        send_string = f"email_address='{send_email_address}'"
+        object_method = "send_email_notification"
     __divider()
     print("")
     print(" Once a template is selected and any template variables are set,")
     print(f" sending {template_type} is a simple call to the Python client object")
     print(" To sent the selected template, the client method is:")
     print("")
-    print("response = client.send_sms_notification(")
-    print(f"\t\tphone_number='{phone_number}',")
+    print(f"response = client.{object_method}(")
+    print(f"\t\t{send_string}',")
     print(f"\t\ttemplate_id='{template_id}',")
     print(f"\t\tpersonalisation={personalisation})")
     print("")

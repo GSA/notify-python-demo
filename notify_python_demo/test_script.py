@@ -111,7 +111,7 @@ def main():
     service_id = os.environ.get("ISS_UUID")
     service_key_name = os.environ.get("SERVICE_NAME")
     concat_api_key = "_".join([service_key_name, service_id, api_key])
-    base_url = "http://localhost:6011"
+    base_url = os.environ.get("BASE_URL")
 
     # must pass in base_url, as the default is notify.uk's production URL
     notifications_client = NotificationsAPIClient(concat_api_key, base_url=base_url)
